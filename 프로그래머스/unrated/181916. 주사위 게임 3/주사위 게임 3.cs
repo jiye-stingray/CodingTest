@@ -1,36 +1,68 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class Solution {
     public int solution(int a, int b, int c, int d) {
-        if (a == b && b == c && c == d) return 1111 * a;
+        int answer = 0;
 
-        int[] ints = new int[] { a, b, c, d };
+        Dictionary<int,int> map = new Dictionary<int,int>();
+        int[] ins = new int[] {a,b, c, d };
+        Array.Sort(ins);
+        for (int i = 0; i < ins.Length; i++)
+        {
+            if (map.ContainsKey(ins[i]))
+            {
+                map[ins[i]]++;
+            }
+            else
+                map.Add(ins[i], 1);
+        }
 
-        Array.Sort(ints);
-        if (ints[0] != ints[1] && ints[1] != ints[2] && ints[2] != ints[3] && ints[0] != ints[3]) return ints.Min();
 
-
-        if (ints[0] == ints[1] && ints[2] != ints[3] && ints[0] != ints[2] && ints[0] != ints[3])
-            return ints[2] * ints[3];
-        else if (ints[3] == ints[2] && ints[1] != ints[0] && ints[3] != ints[1] && ints[3] != ints[0])
-            return ints[0] * ints[1];
-        else if (ints[1] == ints[2] && ints[0] != ints[3] && ints[1] != ints[0] && ints[1] != ints[3])
-            return ints[0] * ints[3];    
-
-
-        if (ints[0] == ints[1] && ints[2] == ints[3])
-            return (ints[0] + ints[2]) * Math.Abs(ints[0] - ints[2]);
-        else if (ints[1] == ints[2] && ints[0] == ints[3])
-            return (ints[1] + ints[0]) * Math.Abs(ints[1] - ints[0]);
-
-                int p = 0;
+        int p = 0;
         int q = 0;
 
-        p = ints[0] == ints[1] ? ints[0] : ints[3];
-        q = ints[0] == ints[1] ? ints[3] : ints[0];
-            
+        switch (map.Count)
+        {
+            case 1:
+                return 1111 * ins[0];
+            case 2:
 
-        return (int)Math.Pow((10 * p + q),2);
+                if (map[ins[0]] == 2)
+                {
+
+                    p = ins[0];
+                    q = ins[3];
+
+                    return (p + q) * Math.Abs(p - q);
+
+                }
+                else
+                {
+                    int m = map.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                    p = m;
+                    q = map.FirstOrDefault(item => item.Value == 1).Key;
+
+                    return (int)Math.Pow((10 * p + q), 2);
+                }
+            case 3:
+
+                int max = map.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+                map.Remove(max);
+
+
+                p = map.FirstOrDefault(item => item.Value == 1).Key;
+                map.Remove(p);
+                q = map.FirstOrDefault(item => item.Value == 1).Key;
+
+                return q * p;
+            case 4:
+                return ins.Min();
+            default:
+                break;
+        }
+
+        return answer;
     }
 }
