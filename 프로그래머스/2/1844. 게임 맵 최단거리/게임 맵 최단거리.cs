@@ -52,7 +52,6 @@ public int solution(int[,] maps)
                     {
                         _queue.Enqueue(new Tuple<int, int, int>(newX, newY, dis + 1));
                         bools[newX,newY] = true;
-                        answer = dis + 1;
                     }
                     
                 }
